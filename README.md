@@ -1,7 +1,3 @@
-# hack
-
-> Vezbanje za hakaton
-
 ## Build Setup
 
 ``` bash
