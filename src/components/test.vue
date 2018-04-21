@@ -1,5 +1,11 @@
 <template>
   <div class="test">
+    <a v-bind:href="hozier">Take me to church</a>
+
+    <p v-on:click.shift="coordinates($event)">Koordinate ove linije su sada u konzoli (shift+click)</p>
+
+    <input type="text" v-on:keyup.ctrl.space="spacePressed">Sve samo ne ctrl+space</input>
+
     <h1>{{title}}</h1>
     <p v-if="showName">Best name ever: {{user.firstName}}</p>
     <p v-else="showName">Best singer: {{user.lastName}}</p>
@@ -19,6 +25,7 @@
     name: 'test',
     data() {
       return {
+        hozier: "https://www.youtube.com/watch?v=PVjiKRfKpPI",
         title: "Ovo je naslov",
         user: {
           firstName: "Djordje",
@@ -37,7 +44,10 @@
         alert(atr);
       },
       spacePressed: function(e) {
-        console.log("Pritisnuli smo space");
+        alert("Told you so");
+      },
+      coordinates: function(e) {
+        console.log(e)
       }
     },
     computed: {
