@@ -3,7 +3,6 @@
     <header>
       <app-nav></app-nav>
     </header>
-    <img src="./assets/logo.png">
     <router-view/>
   </div>
 </template>

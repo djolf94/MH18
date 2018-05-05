@@ -3,36 +3,33 @@
         <h1> {{title}} </h1>
 
         <!-- ide .prevent da ne bi slalo po difoltu iz html-a -->
-		<form v-on:submit.prevent = "addUser"> 
-            <label for="inputUsername">Username</label>
-    		<input type="text" id="inputUsername" placeholder="Username"
-    		name="username" v-model="newUser.userName">
-            <br/>  
-
-            <label for="inputPassword4">Password</label>
-      		<input type="password" id="inputPassword4" placeholder="Password"
-      		name="password" v-model="newUser.password">
-            <br/> 
-            
-    		<label for="inputFirstName">First Name</label>
-    		<input type="text" id="inputFirstName" placeholder="Name"
-    		name="firstName" v-model ="newUser.firstName">
-            <br/> 			
-  			
-    		<label for="inputLastName">Last Name</label>
-    		<input type="text" id="inputLastName" placeholder="Last name"
-    		name="lastName" v-model="newUser.lastName">
-            <br/>     					
-  			
-      		<label for="inputEmail4">Email</label>
-      		<input type="email" id="inputEmail4" placeholder="Email"
-      		name="email" v-model="newUser.email">
-            <br/>        			
-   			  				
-    	    <button type="submit" value="Add User">Register</button>
-		</form>
-        
-
+        <div id="text_form">
+            <form v-on:submit.prevent = "addUser" >
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="inputUsername">Username</label>
+                        <input class="form-control" type="text" id="inputUsername" placeholder="Username" name="username" v-model="newUser.userName">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="inputPassword">Password</label>
+                        <input class="form-control" type="password" id="inputPassword4" placeholder="Password" name="password" v-model="newUser.password">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputEmail4">Email</label>
+                    <input class="form-control" type="email" id="inputEmail4" placeholder="Email" name="email" v-model="newUser.email">
+                </div>
+                <div class="form-group">
+                    <label for="inputFirstName">First Name</label>
+                    <input class="form-control" type="text" id="inputFirstName" placeholder="Name" name="firstName" v-model ="newUser.firstName">
+                </div>
+                <div class="form-group">
+                    <label for="inputLastName">Last Name</label>
+                    <input class="form-control" type="text" id="inputLastName" placeholder="Last name" name="lastName" v-model="newUser.lastName">
+                </div>
+                <button class="btn btn-dark" type="submit" value="Add User">Register</button>
+            </form>
+        </div>
     </div>
 </template>
 
@@ -70,4 +67,30 @@
         }
     }
 </script>
-
+<style scoped>
+    h1, h2 {
+        margin: 3%;
+        font-weight: normal;
+        text-align: center
+    }
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+    li {
+        display: inline-block;
+        margin: 0 10px;
+    }
+    a {
+        color: #42b983;
+    }
+    #text_form{
+        width:50%;
+        margin: auto;
+        
+    }
+    #text_form input {
+        width: 100%;
+        clear: both;
+    }
+</style>
