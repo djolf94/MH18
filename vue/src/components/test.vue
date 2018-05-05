@@ -57,18 +57,7 @@
     //hooks created i updated
     created: function() {
       this.edits = "Stranica je sveze izrenderovana";
-
-      /*
-      var f = this.$auth.getUserLS().firstName;
-      var l = this.$auth.getUserLS().lastName;
-      console.log(this.$auth.getUserLS());
-
-      if (!(f == undefined))
-        this.user.firstName = f;
-
-      if (!(l == undefined))
-        this.user.lastName = l;
-      */
+      this.initUser();
     },
     updated: function() {
       this.brojac++;
@@ -89,6 +78,24 @@
       },
       coordinates: function(e) {
         console.log(e);
+      },
+      initUser: function() {
+        console.log();
+        this.axios.get("http://localhost:3000/api/user/" + this.$auth.getUserLS())
+          .then((response) => { 
+            var f = response.data.firstName;
+            var l = response.data.lastName;          
+
+            if (!(f == undefined))
+              this.user.firstName = f;
+
+             if (!(l == undefined))
+              this.user.lastName = l;
+              console.log(response);                  
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
       }
     },
     //filteri sluze za neke proste transformacije teksta. Sve komplikovanije bolje odraditi u computed

@@ -4,7 +4,7 @@ export default function (Vue) {
     Vue.auth = {
         //samo upise username ulogovanog usera u localStorage
         setUserLS(userName) {
-            localStorage.setItem('logedUser', userName)
+            localStorage.setItem('logedUser', userName);
         },
         getUserLS() {
             var userName = localStorage.getItem('logedUser');

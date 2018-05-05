@@ -14,9 +14,9 @@ Vue.use(Auth);
 Vue.config.productionTip = false;
 
 //navigation guard
-//ako si autentifikovan a hoces negde gde je za visitore prebaci te na main
-//a ako si visitor idi gde si krenuo
-//slicno ako nisi auth a hoces na main
+//ako si autentifikovan a hoces negde gde nije za auth prebaci te na main
+//u suprotnom idi gde si krenuo 
+//slicno za visitore
 router.beforeEach (
   (to, from, next) => {
     if (Vue.auth.isAuthenticated()) {

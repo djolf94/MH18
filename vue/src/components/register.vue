@@ -56,13 +56,16 @@
                             lastName: this.newUser.lastName,
                             email: this.newUser.email
                         })
-                        .then(function (response) {
+                        .then((response) => {
                             console.log(response);
-                            this.$router.push('/login');
+                            this.goToLogin();
                         })
                         .catch(function (error) {
                             console.log(error);
                         });
+            },
+            goToLogin: function(response) {
+                this.$router.push('/login');
             }
         }
     }
