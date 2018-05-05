@@ -91,7 +91,7 @@
 
              if (!(l == undefined))
               this.user.lastName = l;
-              console.log(response);                  
+              console.log("Uzeli smo ime i prezime logovanog usera");                  
           })
           .catch(function (error) {
             console.log(error);
