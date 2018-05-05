@@ -8,10 +8,10 @@
     <p>HOOKS: {{edits}}</p>
     <br />
 
-    <input type="text" v-on:keyup.ctrl.space="spacePressed">Sve samo ne ctrl+space</input>
+    <input type="text" v-on:keyup.ctrl.space="spacePressed">Sve samo ne ctrl+space
 
     <h1>{{title}}</h1>
-    <label>Unesite boju: </label><input type="text" v-model="colorInput"></input>
+    <label>Unesite boju: </label><input type="text" v-model="colorInput">
 
     <!-- jednostuke {} znaci da ce se doslovno upisati u v-bind ono sto pise
      promenljive se izracunavaju same kao sto vidimo gore u v-bind:href tako da nju samo navedemo
@@ -19,14 +19,14 @@
      posto ne postoji promenljiva color ovde je moglo i bez ''
      mogli smo i neki computed "color:" + colorInput -->
     <p v-if="showName" v-bind:style="{'color': colorInput}">Best name ever: {{user.firstName}}</p>
-    <p v-else="showName">Best singer: {{user.lastName}}</p>
+    <p v-else>Best singer: {{user.lastName}}</p>
     <ul>
       <li v-for="item in items">{{item.title}}</li>
     </ul>
     <button v-on:click="greet('Hello, is it me you\'re looking for')">Say greeting</button><br />
-    <label>First name:</label><input type="text" v-model="user.firstName"></input>
+    <label>First name:</label><input type="text" v-model="user.firstName">
     <br />
-    <label>Last name:</label><input type="text" v-model="user.lastName"></input>
+    <label>Last name:</label><input type="text" v-model="user.lastName">
 
     <p> Computed: {{fullName}} Computed (+filteri): {{ fullName | uc(false) | reverseFilter }} </p>
   </div>
@@ -57,6 +57,18 @@
     //hooks created i updated
     created: function() {
       this.edits = "Stranica je sveze izrenderovana";
+
+      /*
+      var f = this.$auth.getUserLS().firstName;
+      var l = this.$auth.getUserLS().lastName;
+      console.log(this.$auth.getUserLS());
+
+      if (!(f == undefined))
+        this.user.firstName = f;
+
+      if (!(l == undefined))
+        this.user.lastName = l;
+      */
     },
     updated: function() {
       this.brojac++;
