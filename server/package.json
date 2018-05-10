@@ -8,7 +8,8 @@
     "cors": "^2.8.4",
     "eslint": "^4.19.1",
     "express": "^4.16.3",
-    "mongoose": "*"
+    "mongoose": "*",
+    "nodemon": "^1.17.4"
   },
   "devDependencies": {},
   "scripts": {

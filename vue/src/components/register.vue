@@ -51,7 +51,8 @@
                             password: this.newUser.password,
                             firstName: this.newUser.firstName,
                             lastName: this.newUser.lastName,
-                            email: this.newUser.email
+                            email: this.newUser.email,
+                            bookLib: []
                         })
                         .then((response) => {
                             console.log(response);

@@ -20,6 +20,9 @@ var userSchema = mongoose.Schema({
     email: {
         type: String
     },
+    bookLib: {
+        type: Array
+    },
     registerDate: {
         type: Date,
         default: Date.now
@@ -42,3 +45,10 @@ module.exports.addUser = (user, callback) => {
     User.create(user, callback);
 };
 
+module.exports.updateUser = (user, book, callback) => {
+    user.bookLib.push(book);
+    User.update(
+        {"userName": user.userName},
+        user, 
+        callback)
+};

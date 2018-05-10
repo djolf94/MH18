@@ -8,6 +8,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 User = require('./models/users');
+Book = require('./models/books');
 
 //connect to mongoose
 mongoose.connect('mongodb://localhost/bookstore');
@@ -15,7 +16,7 @@ var db = mongoose.connection;
 
 //get request to '/'
 app.get('/', (req, res) => {
-    res.send('Please use /api/books or /api/genres');
+    res.send('Please use /api/users');
 });
 
 app.get('/api/users', (req, res) => {
@@ -40,6 +41,27 @@ app.get('/api/user/:_UserName', (req, res) => {
         if (err)
             throw err;
         res.json(user);
+    });
+});
+
+app.get('/api/books', (req, res) => {
+    Book.getBooks((err, books) => {
+        if(err)
+            throw err;
+        res.json(books);
+    });
+});
+
+app.post('/api/books', (req, res) => {
+    var book = req.body.book;
+    User.getUserByUserName(req.body.user, (err, user) => {
+        if (err)
+            throw err;
+        User.updateUser(user, book, (err, users) => {
+            if(err)
+                throw err;
+            res.json(users);
+        });
     });
 });
 

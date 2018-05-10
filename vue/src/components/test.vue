@@ -2,9 +2,10 @@
   <div class="test">
     <!--sa v-bind bajndujemo HTML atribute ako hocemo da vrednost atributa bude Vue promenljiva -->
     <a target='_blank' v-bind:href="JBJ">Shot through the heart and you're to blame...</a>
-    <!--sa $event prosledimo event f-ji koji smo uhvatili u v-on listeneru  -->
+    <button v-on:click="changeJBJ">Menjaj JBJ</button>
+    <!--sa $event prosledimo event f-ji koji smo uhvatili u v-ohn listeneru  -->
     <p v-on:click.shift="coordinates($event)">Koordinate ove linije su sada u konzoli (shift+click)</p>
-
+    
     <p>HOOKS: {{edits}}</p>
     <br />
 
@@ -12,7 +13,6 @@
 
     <h1>{{title}}</h1>
     <label>Unesite boju: </label><input type="text" v-model="colorInput">
-
     <!-- jednostuke {} znaci da ce se doslovno upisati u v-bind ono sto pise
      promenljive se izracunavaju same kao sto vidimo gore u v-bind:href tako da nju samo navedemo
      ostalo pod jednostuke navodnike da bi vue znao stringovi a ne neke promenljive
@@ -96,6 +96,9 @@
           .catch(function (error) {
             console.log(error);
           });
+      },
+      changeJBJ: function() {
+        this.JBJ = "https://codepen.io/tutelagesystems/pen/pjBbxQ"
       }
     },
     //filteri sluze za neke proste transformacije teksta. Sve komplikovanije bolje odraditi u computed
