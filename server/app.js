@@ -10,7 +10,7 @@ app.use(cors());
 User = require('./models/users');
 
 //connect to mongoose
-mongoose.connect('mongodb://localhost/bookstore');
+mongoose.connect('mongodb://admin:ivke12345@ds219130.mlab.com:19130/mh18');
 var db = mongoose.connection;
 
 //get request to '/'
