@@ -12,7 +12,8 @@ export default {
       xCoordinate: "",
       yCoordinate: "",
 
-      leftIndicator: true
+      leftIndicator: true,
+      rightIndicator: true
 
     };
   },
@@ -50,13 +51,16 @@ export default {
           if(this.xCoordinate == 1 && this.leftIndicator == true){
             localStorage.setItem("x", Number(localStorage.getItem("x")) + 1);
             this.leftIndicator = false;
-            console.log(this.leftIndicator)
+            console.log(this.leftIndicator);
           }
-          else if(this.xCoordinate == 0){
-             //localStorage.setItem("x", "swipe left");
+          else if(this.xCoordinate == 0 && this.rightIndicator == true){
+             localStorage.setItem("x", Number(localStorage.getItem("x")) - 1);
+            this.rightIndicator = false;
+            console.log(this.rightIndicator);
           }
-          else{
+          else if (this.xCoordinate != 0 && this.xCoordinate != 1) {
             this.leftIndicator = true;
+            this.rightIndicator = true;
           }
 
 
