@@ -1,6 +1,6 @@
 <template>
   <div class="test">
-    <button @click="leapStart">Open doors</button>
+    <button @click="countIndicatorInit()">Open doors</button>
   </div>
 </template>
 
@@ -13,28 +13,31 @@ export default {
       yCoordinate: "",
       leftIndicator: true,
       rightIndicator: true,
-      controller: null,
-      countIndicator: true
+      countIndicator: false,
+     // controller: null
+      
     };
   },
   created: function() {
     localStorage.setItem("x", 0);
-    //this.leapStart();
-    this.countIndicator = true;
-    this.controller = new Leap.Controller();
+   // this.controller = new Leap.Controller();
+    this.leapStart();
+    localStorage.setItem('ci', 0);    
   },
   updated: function() {},
   methods: {
-  
+    countIndicatorInit: function () {
+      localStorage.setItem('ci', 1);
+    },  
     leapStart: function() {
       var options = { enableGestures: true };
 
       var normalizedDisplay = document.getElementById("normPosition");
 
-      //var controller = new Leap.Controller();
-      this.controller.on("frame", function(frame) {
+      var controller = new Leap.Controller();
+      controller.on("frame", function(frame) {
 
-        console.log("Upalio sam se")
+        //console.log("Upalio sam se")
         if (frame.pointables.length > 0) {
           var pointable = frame.pointables[0];
           //console.log(frame.pointables);
@@ -48,10 +51,10 @@ export default {
 
           this.xCoordinate = normalizedPosition[0].toFixed(3);
           this.yCoordinate = normalizedPosition[1].toFixed(3);
-          //console.log("(" + this.xCoordinate + " , " + this.yCoordinate + ") ");
+          console.log("(" + this.xCoordinate + " , " + this.yCoordinate + ") ");
 
-          if(this.countIndicator == true){
-            console.log("cao")
+          
+          if (Number(localStorage.getItem('ci')) == 1) {
             if(this.xCoordinate == 1 && this.leftIndicator == true){
               localStorage.setItem("x", Number(localStorage.getItem("x")) + 1);
               this.leftIndicator = false;
@@ -66,19 +69,16 @@ export default {
               this.leftIndicator = true;
               this.rightIndicator = true;
             }
-          }
+          }          
 
           if(this.yCoordinate == 1){
             console.log("Door close");
-            this.countIndicator = false
+            localStorage.setItem('ci', 0);
           }
-
-
         }
       });
-      this.controller.connect();
-    }
-    
+      controller.connect();
+    }    
   }
 };
 </script>
