@@ -1,0 +1,78 @@
+<html>
+
+<head>
+</head>
+
+<body>
+
+  <p>Normalized Position:
+    <span id="normPosition">…</span>
+  </p>
+
+
+
+
+  <script src="https://js.leapmotion.com/leap-0.6.4.js"></script>
+  <script type="text/javascript">
+  
+    localStorage.setItem("S1", 0);
+    localStorage.setItem("S2", 0);
+    localStorage.setItem("S3", 0);
+    localStorage.setItem("S4", 0);
+    
+
+    var leftIndicator = true;
+    var rightIndicator = true;
+    var countIndicator = false;
+
+    var options = {
+      enableGestures: true
+    };
+
+    var normalizedDisplay = document.getElementById("normPosition");
+
+    var controller = new Leap.Controller();
+    controller.on("frame", function (frame) {
+
+      if (frame.pointables.length > 0) {
+        var pointable = frame.pointables[0];
+        var interactionBox = frame.interactionBox;
+        var normalizedPosition = interactionBox.normalizePoint(pointable.tipPosition, true);
+        var tipPosition = pointable.tipPosition;
+
+        var xCoordinate = normalizedPosition[0].toFixed(3);
+        var yCoordinate = normalizedPosition[1].toFixed(3);
+        //console.log("(" + this.xCoordinate + " , " + this.yCoordinate + ") ");
+        
+        var current_station = localStorage.getItem('current_station');
+
+        if (Number(localStorage.getItem('ci')) == 1) {
+          if (xCoordinate == 1 && leftIndicator == true) {
+
+              console.log(current_station);
+              localStorage.setItem(current_station, Number(localStorage.getItem(current_station)) - 1);
+              leftIndicator = false;
+              console.log("Passanger out");
+            
+          } else if (xCoordinate == 0 && rightIndicator == true) {
+            localStorage.setItem(current_station, Number(localStorage.getItem(current_station)) + 1);
+            rightIndicator = false;
+            console.log("Passanger in");
+          } else if (xCoordinate != 0 && xCoordinate != 1) {
+            leftIndicator = true;
+            rightIndicator = true;
+          }
+        }
+
+        if(yCoordinate == 1){
+          console.log("Door close");
+          localStorage.setItem('ci', 0);
+        }
+      }
+    });
+    controller.connect();
+
+  </script>
+</body>
+
+</html>
