@@ -15,10 +15,10 @@ var db = mongoose.connection;
 
 //get request to '/'
 app.get('/', (req, res) => {
-    res.send('Please use /api/books or /api/genres');
+    res.send('Please use /users');
 });
 
-app.get('/api/users', (req, res) => {
+app.get('/users', (req, res) => {
     User.getUsers((err, users) => {
         if (err)
             throw err;
@@ -26,7 +26,7 @@ app.get('/api/users', (req, res) => {
     });
 });
 
-app.post('/api/users', (req, res) => {
+app.post('/users', (req, res) => {
     var user = req.body;
     User.addUser(user,(err, user) => {
         if (err)
@@ -35,7 +35,7 @@ app.post('/api/users', (req, res) => {
     });
 });
 
-app.get('/api/user/:_UserName', (req, res) => {
+app.get('/user/:_UserName', (req, res) => {
     User.getUserByUserName(req.params._UserName, (err, user) => {
         if (err)
             throw err;

@@ -44,6 +44,15 @@ export default new Router({
         forVisitors: true,
         forAuth: false
       }
+    },
+    {
+      path: '/users',
+      name: 'Users',
+      component: users,
+      meta: {
+        forVisitors: true,
+        forAuth: false
+      }
     }
   ]
 });
