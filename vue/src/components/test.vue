@@ -1,6 +1,6 @@
 <template>
   <div class="test">
-
+    <button @click="leapStart">Open doors</button>
   </div>
 </template>
 
@@ -11,15 +11,17 @@ export default {
     return {
       xCoordinate: "",
       yCoordinate: "",
-
       leftIndicator: true,
-      rightIndicator: true
-
+      rightIndicator: true,
+      controller: null,
+      countIndicator: true
     };
   },
   created: function() {
     localStorage.setItem("x", 0);
-    this.leapStart();
+    //this.leapStart();
+    this.countIndicator = true;
+    this.controller = new Leap.Controller();
   },
   updated: function() {},
   methods: {
@@ -29,10 +31,10 @@ export default {
 
       var normalizedDisplay = document.getElementById("normPosition");
 
-      var controller = new Leap.Controller();
-      controller.on("frame", function(frame) {
+      //var controller = new Leap.Controller();
+      this.controller.on("frame", function(frame) {
 
-        //console.log("Upalio sam se")
+        console.log("Upalio sam se")
         if (frame.pointables.length > 0) {
           var pointable = frame.pointables[0];
           //console.log(frame.pointables);
@@ -46,28 +48,35 @@ export default {
 
           this.xCoordinate = normalizedPosition[0].toFixed(3);
           this.yCoordinate = normalizedPosition[1].toFixed(3);
-          console.log("(" + this.xCoordinate + " , " + this.yCoordinate + ") ");
+          //console.log("(" + this.xCoordinate + " , " + this.yCoordinate + ") ");
 
-          if(this.xCoordinate == 1 && this.leftIndicator == true){
-            localStorage.setItem("x", Number(localStorage.getItem("x")) + 1);
-            this.leftIndicator = false;
-            console.log(this.leftIndicator);
-          }
-          else if(this.xCoordinate == 0 && this.rightIndicator == true){
-             localStorage.setItem("x", Number(localStorage.getItem("x")) - 1);
-            this.rightIndicator = false;
-            console.log(this.rightIndicator);
-          }
-          else if (this.xCoordinate != 0 && this.xCoordinate != 1) {
-            this.leftIndicator = true;
-            this.rightIndicator = true;
+          if(this.countIndicator == true){
+            console.log("cao")
+            if(this.xCoordinate == 1 && this.leftIndicator == true){
+              localStorage.setItem("x", Number(localStorage.getItem("x")) + 1);
+              this.leftIndicator = false;
+              console.log("Pass");
+            }
+            else if(this.xCoordinate == 0 && this.rightIndicator == true){
+              localStorage.setItem("x", Number(localStorage.getItem("x")) - 1);
+              this.rightIndicator = false;
+              console.log("Swipe right");
+            }
+            else if (this.xCoordinate != 0 && this.xCoordinate != 1) {
+              this.leftIndicator = true;
+              this.rightIndicator = true;
+            }
           }
 
+          if(this.yCoordinate == 1){
+            console.log("Door close");
+            this.countIndicator = false
+          }
 
 
         }
       });
-      controller.connect();
+      this.controller.connect();
     }
     
   }
