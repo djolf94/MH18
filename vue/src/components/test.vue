@@ -3,7 +3,7 @@
     <button @click="countIndicatorInit()">Open doors</button>
 
     <GmapMap
-  :center="{lat:10, lng:10}"
+  :center="center"
   :zoom="7"
   map-type-id="terrain"
   style="width: 1365px; height: 545px"
