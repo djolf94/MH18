@@ -6,11 +6,13 @@ import router from './router';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 import * as VueGoogleMaps from 'vue2-google-maps';
+import brain from "brain.js";
 
 import Auth from './packages/auth/Auth.js';
 
 Vue.use(VueAxios, axios);
 Vue.use(Auth);
+Vue.use(brain);
 
 Vue.use(VueGoogleMaps, {
   load: {

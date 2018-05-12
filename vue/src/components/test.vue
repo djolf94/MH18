@@ -274,10 +274,29 @@ export default {
   created: function() {
     localStorage.setItem("x", 0);
     this.leapStart();
-    localStorage.setItem('ci', 0);    
+    localStorage.setItem('ci', 0);
+    this.machineLearning(); 
   },
   updated: function() {},
   methods: {
+    machineLearning: function(){
+        var net = new brain.NeuralNetwork();
+
+        net.train([
+          {input: { s1: 0.9, s2: 0.1, s3: 0 }, output: { first: 1 }},
+          {input: { s1: 0.3, s2: 0.2, s3: 0.9 }, output: { third: 1 }},
+          {input: { s1: 0.3, s2: 0.1, s3: 0.8 }, output: { third: 1 }},
+          {input: { s1: 0.1, s2: 0.3, s3: 0.2 }, output: { nothing: 1 }},
+          {input: { s1: 0.1, s2: 0.3, s3: 0.2 }, output: { nothing: 1 }},
+          {input: { s1: 0.1, s2: 0.3, s3: 0.2 }, output: { nothing: 1 }},
+          {input: { s1: 0.1, s2: 0.7, s3: 0.2 }, output: { second: 1 }},
+          {input: { s1: 0.2, s2: 0.8, s3: 0.1 }, output: { second: 1 }},
+          {input: { s1: 0.8, s2: 0.2, s3: 0.15 }, output: { first: 1 }}]);
+
+        var output = net.run({ s1: 0.2, s2: 0.3, s3: 0.4 });  // { white: 0.99, black: 0.002 }
+        console.log(output);
+      
+    },
     countIndicatorInit: function () {
       localStorage.setItem('ci', 1);
       console.log("Open doors");
