@@ -3,109 +3,137 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
     <title>Google Maps</title>
-    <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=ABQIAAAAPDUET0Qt7p2VcSk6JNU1sBSM5jMcmVqUpI7aqV44cW1cEECiThQYkcZUPRJn9vy_TWxWvuLoOfSFBw" type="text/javascript"></script>
+    <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=AIzaSyCDZ3qeCgnBI_a0fDy7PyyBaIveJQA2CZc" type="text/javascript"></script>
     <script src="epoly.js" type="text/javascript"></script>
   </head>
   <body onunload="GUnload()">
     
     <div id="controls">
      <form onsubmit="start();return false" action="#">
-      Enter start and end addresses.<br />
-      <input type="text" size="80" maxlength="200" id="startpoint" value="Briarcrest Rd, 90046" /><br />
-      <input type="text" size="80" maxlength="200" id="endpoint" value="Hollywood Hills Rd, 90046@34.11327,-118.39089" /><br />
+      <input type="text" size="80" maxlength="200" id="startpoint" value="44.806943,20.455324" /><br />
+      <!--
+      <input type="text" size="80" maxlength="200" id="endpoint" placeholder="Druga adresa" /><br />
+      -->
       <input type="submit" value="Start"  />
      </form>
     </div>
 
     <div id="map" style="width: 700px; height: 500px"></div>
     <div id="step">&nbsp;</div>
-    <div id="distance">Miles: 0.00</div>
+    <div id="distance">Kilometara: 0.00</div>
 
     <script type="text/javascript">
     //<![CDATA[
     if (GBrowserIsCompatible()) {
- 
-      var map = new GMap2(document.getElementById("map"));
-      map.addControl(new GMapTypeControl());
-      map.setCenter(new GLatLng(0,0),2);
-      var dirn = new GDirections();
-      var step = 5; // metres
-      var tick = 100; // milliseconds
-      var poly;
-      var eol;
-      var car = new GIcon();
-          car.image="bus.png"
-          car.iconSize=new GSize(40,40);
-          car.iconAnchor=new GPoint(16,9);
-      var marker;
-      var k=0;
-      var stepnum=0;
-      var speed = "";   
+        
+        let path = [
+            {lat: 44.806940, lng: 20.455330},
+            {lat: 44.807629, lng: 20.456001},
+            {lat: 44.805174, lng: 20.461053},
+            {lat: 44.803184, lng: 20.464332},
+            {lat: 44.801621, lng: 20.468590}
+        ];
 
-      function animate(d) {
-        if (d>eol) {
-          document.getElementById("step").innerHTML = "<b>Trip completed<\/b>";
-          document.getElementById("distance").innerHTML =  "Miles: "+(d/1609.344).toFixed(2);
-          return;
+        var map = new GMap2(document.getElementById("map"));
+        var nextStop = 1;
+        var previousStop = 0;
+        map.addControl(new GMapTypeControl());
+        map.setCenter(new GLatLng(0,0),2);
+        var dirn = new GDirections();
+        var step = 5; // metres
+        var tick = 100; // milliseconds
+        var poly;
+        var eol;
+        var car = new GIcon();
+            car.image="bus.png"
+            car.iconSize=new GSize(40,40);
+            car.iconAnchor=new GPoint(16,9);
+        var marker;
+        var k=0;
+        var stepnum=0;
+        var speed = "";
+        var eps = 1000;
+
+        function animate(d) {
+            if (d>eol) {
+                return;
+            }
+            var p = poly.GetPointAtDistance(d);
+            
+            let lat = p.lat().toFixed(6)*1000000;
+            let lng = p.lng().toFixed(6)*1000000;
+
+            if (nextStop >= path.length) return;
+
+            if (Math.abs(lat - path[nextStop].lat*1000000) < 100) {
+                if (Math.abs(lng - path[nextStop].lng*1000000) < 100) {
+                    console.log("Stanica: " + nextStop);
+                    sleep(5000);
+                    nextStop++;
+                }
+            }
+
+            if (k++>=180/step) {
+                map.panTo(p);
+                k=0;
+            }
+            
+            marker.setPoint(p);
+            document.getElementById("distance").innerHTML =  "Miles: "+(d/1609.344).toFixed(2)+speed;
+            if (stepnum+1 < dirn.getRoute(0).getNumSteps()) {
+                if (dirn.getRoute(0).getStep(stepnum).getPolylineIndex() < poly.GetIndexAtDistance(d)) {
+                    stepnum++;
+                    var steptext = dirn.getRoute(0).getStep(stepnum).getDescriptionHtml();
+                    document.getElementById("step").innerHTML = "<b>Next:<\/b> "+steptext;
+                    var stepdist = dirn.getRoute(0).getStep(stepnum-1).getDistance().meters;
+                    var steptime = dirn.getRoute(0).getStep(stepnum-1).getDuration().seconds;
+                    var stepspeed = ((stepdist/steptime) * 2.24).toFixed(0);
+                    step = stepspeed/2.5;
+                    speed = "<br>Trenutna brzina: " + stepspeed +" kmh";
+                }
+            } else {
+                if (dirn.getRoute(0).getStep(stepnum).getPolylineIndex() < poly.GetIndexAtDistance(d)) {
+                    document.getElementById("step").innerHTML = "<b>Next: Arrive at your destination<\/b>";
+                }
+            }
+            setTimeout("animate("+(d+step)+")", tick);
         }
-        var p = poly.GetPointAtDistance(d);
-        if (k++>=180/step) {
-          map.panTo(p);
-          k=0;
-        }
-        marker.setPoint(p);
-        document.getElementById("distance").innerHTML =  "Miles: "+(d/1609.344).toFixed(2)+speed;
-        if (stepnum+1 < dirn.getRoute(0).getNumSteps()) {
-          if (dirn.getRoute(0).getStep(stepnum).getPolylineIndex() < poly.GetIndexAtDistance(d)) {
-            stepnum++;
+
+        GEvent.addListener(dirn,"load", function() {
+            document.getElementById("controls").style.display="none";
+            poly=dirn.getPolyline();
+            eol=poly.Distance();
+            map.setCenter(poly.getVertex(0),17);
+            map.addOverlay(new GMarker(poly.getVertex(0),G_START_ICON));
+            map.addOverlay(new GMarker(poly.getVertex(poly.getVertexCount()-1),G_END_ICON));
+            marker = new GMarker(poly.getVertex(0),{icon:car});
+            map.addOverlay(marker);
             var steptext = dirn.getRoute(0).getStep(stepnum).getDescriptionHtml();
-            document.getElementById("step").innerHTML = "<b>Next:<\/b> "+steptext;
-            var stepdist = dirn.getRoute(0).getStep(stepnum-1).getDistance().meters;
-            var steptime = dirn.getRoute(0).getStep(stepnum-1).getDuration().seconds;
-            var stepspeed = ((stepdist/steptime) * 2.24).toFixed(0);
-            step = stepspeed/2.5;
-            speed = "<br>Current speed: " + stepspeed +" mph";
-          }
-        } else {
-          if (dirn.getRoute(0).getStep(stepnum).getPolylineIndex() < poly.GetIndexAtDistance(d)) {
-            document.getElementById("step").innerHTML = "<b>Next: Arrive at your destination<\/b>";
-          }
+            document.getElementById("step").innerHTML = steptext;
+            setTimeout("animate(0)",2000);  // Allow time for the initial map display
+        });
+
+        GEvent.addListener(dirn,"error", function() {
+            alert("Location(s) not recognised. Code: "+dirn.getStatus().code);
+        });
+
+        function start() {
+            //var startpoint = document.getElementById("startpoint").value;
+            var startpoint = path[previousStop].lat + ", " + path[previousStop].lng;
+            //var endpoint = document.getElementById("endpoint").value;
+            var endpoint = path[nextStop].lat + ", " + path[nextStop].lng
+            dirn.loadFromWaypoints(path, {getPolyline:true,getSteps:true});
         }
-        setTimeout("animate("+(d+step)+")", tick);
-      }
 
-      GEvent.addListener(dirn,"load", function() {
-        document.getElementById("controls").style.display="none";
-        poly=dirn.getPolyline();
-        eol=poly.Distance();
-        map.setCenter(poly.getVertex(0),17);
-        map.addOverlay(new GMarker(poly.getVertex(0),G_START_ICON));
-        map.addOverlay(new GMarker(poly.getVertex(poly.getVertexCount()-1),G_END_ICON));
-        marker = new GMarker(poly.getVertex(0),{icon:car});
-        map.addOverlay(marker);
-        var steptext = dirn.getRoute(0).getStep(stepnum).getDescriptionHtml();
-        document.getElementById("step").innerHTML = steptext;
-        setTimeout("animate(0)",2000);  // Allow time for the initial map display
-      });
-
-      GEvent.addListener(dirn,"error", function() {
-        alert("Location(s) not recognised. Code: "+dirn.getStatus().code);
-      });
-
-      function start() {
-        var startpoint = document.getElementById("startpoint").value;
-        var endpoint = document.getElementById("endpoint").value;
-        dirn.loadFromWaypoints([startpoint,endpoint],{getPolyline:true,getSteps:true});
-      }
-
-    }
-
-    // This Javascript is based on code provided by the
-    // Community Church Javascript Team
-    // http://www.bisphamchurch.org.uk/   
-    // http://econym.org.uk/gmap/
-
-    //]]>
+        }
+        function sleep(milliseconds) {
+            var start = new Date().getTime();
+            while (true) {
+                if ((new Date().getTime() - start) > milliseconds) {
+                    break;
+                }
+            }
+        }
     </script>
   </body>
 
