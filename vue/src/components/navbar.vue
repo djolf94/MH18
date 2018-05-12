@@ -18,9 +18,6 @@
                 <li class="nav-item">
                     <router-link class="nav-link" to="/register" active-class="active" exact>Register</router-link>
                 </li>
-                <li class="nav-item">
-                    <router-link class="nav-link" to="/users" active-class="active" exact>Users</router-link>
-                </li>
             </ul>
         </div>
         <button class="btn btn-outline-primary my-2 my-sm-0" v-on:click="logOut()">Logout</button>

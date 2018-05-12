@@ -35,7 +35,7 @@
         },
         methods: {
             logUser: function() { //ovde ne moze =>, ako stavimo ne radi
-                this.axios.get('http://localhost:3000/user/' + this.newUser.userName)
+                this.axios.get('http://localhost:3000/api/user/' + this.newUser.userName)
                 .then((response) => { //ovde mora => f-ja da bi radio this
                     this.checkPassword(response);  
                     console.log(response);                  
