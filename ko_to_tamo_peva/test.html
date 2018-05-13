@@ -40,15 +40,7 @@
           <input type="text" class="form-control" id="inlineFormInputName" placeholder="44.806940,20.455330">
         </div>
         <div class="col-auto my-1">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="autoSizingCheck2">
-            <label class="form-check-label" for="autoSizingCheck2">
-              Remember me
-            </label>
-          </div>
-        </div>
-        <div class="col-auto my-1">
-            <input type="submit" class="btn btn-primary" id="startbtn" value="Start" />
+          <input type="submit" class="btn btn-primary" id="startbtn" value="Start" />
         </div>
       </div>
       <!--
@@ -120,11 +112,17 @@
 
         if (nextStop >= path.length) return;
 
+
         if (Math.abs(lat - path[nextStop].lat * 1000000) < 100) {
           if (Math.abs(lng - path[nextStop].lng * 1000000) < 100) {
             console.log("Stanica: " + nextStop);
             document.getElementById("stanica").innerHTML = "Stanica" + previousStop;
             localStorage.setItem("current_station", "S" + nextStop);
+            if(nextStop == 4){
+              sleep(3000);
+              console.log("KRAAAAJ");
+              getData()
+            }
             sleep(7000);
             nextStop++;
           }
@@ -188,7 +186,6 @@
       }
 
     }
-
     function sleep(milliseconds) {
       var start = new Date().getTime();
       localStorage.setItem("ci", 1);
@@ -201,6 +198,14 @@
 
       }
     }
+    function getData(){
+      var array = {}
+      array.s1 = localStorage.getItem("S1");
+      array.s2 = localStorage.getItem("S2");
+      array.s3 = localStorage.getItem("S3");
+      console.log(array);
+    }
+
 
   </script>
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"

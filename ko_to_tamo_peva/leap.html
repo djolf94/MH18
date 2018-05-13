@@ -6,10 +6,17 @@
 <body>
 
   <p>Normalized Position:
-    <span id="normPosition">…</span>
+    <span id="normPosition"></span>
   </p>
 
+  <p>Current Station:
+    <span id="pass"></span>
+  </p>
 
+  <p id="S1">S1: </p>
+  <p id="S2">S2: </p>
+  <p id="S3">S3: </p>
+  <p id="S4">S4: </p>
 
 
   <script src="https://js.leapmotion.com/leap-0.6.4.js"></script>
@@ -45,6 +52,8 @@
         //console.log("(" + this.xCoordinate + " , " + this.yCoordinate + ") ");
         
         var current_station = localStorage.getItem('current_station');
+        
+        document.getElementById("pass").innerHTML = current_station;
 
         if (Number(localStorage.getItem('ci')) == 1) {
           if (xCoordinate == 1 && leftIndicator == true) {
@@ -52,11 +61,14 @@
               console.log(current_station);
               localStorage.setItem(current_station, Number(localStorage.getItem(current_station)) - 1);
               leftIndicator = false;
+              document.getElementById(current_station).innerHTML = current_station + ": " + localStorage.getItem(current_station);  
               console.log("Passanger out");
+              
             
           } else if (xCoordinate == 0 && rightIndicator == true) {
             localStorage.setItem(current_station, Number(localStorage.getItem(current_station)) + 1);
             rightIndicator = false;
+            document.getElementById(current_station).innerHTML = current_station + ": " + localStorage.getItem(current_station);  
             console.log("Passanger in");
           } else if (xCoordinate != 0 && xCoordinate != 1) {
             leftIndicator = true;
