@@ -1,36 +1,89 @@
 <html>
 
 <head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" crossorigin="anonymous"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm">
+  <style>
+    #container {
+      width: 90px;
+      height: 180px;
+      position: relative;
+      background: none;
+      margin-left: 0;
+      margin-right: 60%
+    }
+
+    #animate {
+      width: 80px;
+      height: 180px;
+      margin-left: 0px;
+      position: absolute;
+      background-color: blue;
+      background-image: url('door.jpg');
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: cover;
+    }
+
+  </style>
 </head>
 
 <body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark justify-content-between">
 
-  <p>Normalized Position:
-    <span id="normPosition"></span>
-  </p>
+    <a class="navbar-brand" to="/">
+      <img src="../vue/src/assets/logo.png" width="60" height="40" alt="">
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+      aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" to="/" active-class="active" exact> Home</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <!--
+  <button onclick="openDoor()">Open</button>
+<button onclick="closeDoor()">Close</button>
 
-  <p>Current Station:
-    <span id="pass"></span>
-  </p>
-
-  <p id="S1">S1: </p>
-  <p id="S2">S2: </p>
-  <p id="S3">S3: </p>
-  <p id="S4">S4: </p>
-
-
+-->
+  <div class="jumbotron">
+    <h1 id="doors" class="display-4">Doors closed!</h1>
+    <div class="progress" style="height: 20px;">
+    </div>
+    <div class="row">
+      <div class="col">
+        <p class="lead" id="S1">S1: 0 </p>
+        <p class="lead" id="S2">S2: 0 </p>
+        <p class="lead" id="S3">S3: 0 </p>
+        <p class="lead" id="S4">S4: 0 </p>
+      </div>
+      <div id="container" class="col">
+        <div id="animate"></div>
+      </div>
+    </div>
+    <hr class="my-4">
+    <p class="lead">
+      <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+    </p>
+  </div>
   <script src="https://js.leapmotion.com/leap-0.6.4.js"></script>
   <script type="text/javascript">
-  
     localStorage.setItem("S1", 0);
     localStorage.setItem("S2", 0);
     localStorage.setItem("S3", 0);
     localStorage.setItem("S4", 0);
-    
+
 
     var leftIndicator = true;
     var rightIndicator = true;
     var countIndicator = false;
+
+    var doorIndicator = false;
 
     var options = {
       enableGestures: true
@@ -50,41 +103,94 @@
         var xCoordinate = normalizedPosition[0].toFixed(3);
         var yCoordinate = normalizedPosition[1].toFixed(3);
         //console.log("(" + this.xCoordinate + " , " + this.yCoordinate + ") ");
-        
+
         var current_station = localStorage.getItem('current_station');
-        
-        document.getElementById("pass").innerHTML = current_station;
+
+        //document.getElementById("pass").innerHTML = current_station;
 
         if (Number(localStorage.getItem('ci')) == 1) {
+          document.getElementById("doors").innerHTML = "Doors open"
+          if(doorIndicator){
+            openDoor();
+            doorIndicator = false;
+          }
+
           if (xCoordinate == 1 && leftIndicator == true) {
 
-              console.log(current_station);
-              localStorage.setItem(current_station, Number(localStorage.getItem(current_station)) - 1);
-              leftIndicator = false;
-              document.getElementById(current_station).innerHTML = current_station + ": " + localStorage.getItem(current_station);  
-              console.log("Passanger out");
-              
-            
+            console.log(current_station);
+            localStorage.setItem(current_station, Number(localStorage.getItem(current_station)) - 1);
+            leftIndicator = false;
+            document.getElementById(current_station).innerHTML = current_station +
+              ": " + localStorage.getItem(current_station);
+            console.log("Passanger out");
+
+
           } else if (xCoordinate == 0 && rightIndicator == true) {
             localStorage.setItem(current_station, Number(localStorage.getItem(current_station)) + 1);
             rightIndicator = false;
-            document.getElementById(current_station).innerHTML = current_station + ": " + localStorage.getItem(current_station);  
+            document.getElementById(current_station).innerHTML = current_station + ": " + localStorage.getItem(
+              current_station);
             console.log("Passanger in");
           } else if (xCoordinate != 0 && xCoordinate != 1) {
             leftIndicator = true;
             rightIndicator = true;
           }
+        } else {
+          document.getElementById("doors").innerHTML = "Doors closed"
+          if(!doorIndicator){
+            closeDoor();
+            doorIndicator = true;
+          }
+
         }
 
-        if(yCoordinate == 1){
-          console.log("Door close");
+        if (yCoordinate == 1) {
+          document.getElementById("doors").innerHTML = "Doors closed"
+          closeDoor();
           localStorage.setItem('ci', 0);
         }
       }
     });
     controller.connect();
 
+
+    function openDoor() {
+      var elem = document.getElementById("animate");
+      var pos = 0;
+      var id = setInterval(frame, 5);
+
+      function frame() {
+        if (pos == 50) {
+          clearInterval(id);
+        } else {
+          pos++;
+          elem.style.left = pos + 'px';
+        }
+      }
+    }
+
+    function closeDoor() {
+      var elem = document.getElementById("animate");
+      var pos = 50;
+      var id = setInterval(frame, 5);
+
+      function frame() {
+        if (pos == 0) {
+          clearInterval(id);
+        } else {
+          pos--;
+          elem.style.left = pos + 'px';
+        }
+      }
+    }
+
   </script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
 </body>
 
 </html>

@@ -39,19 +39,21 @@
           <label class="sr-only" for="inlineFormInputName">Name</label>
           <input type="text" class="form-control" id="inlineFormInputName" placeholder="44.806940,20.455330">
         </div>
-        <div class="col-auto my-1">
+  
+
+        <div class="col-sm-3 my-1">
           <input type="submit" class="btn btn-primary" id="startbtn" value="Start" />
         </div>
       </div>
       <!--
       <input type="text" size="80" maxlength="200" id="endpoint" placeholder="Druga adresa" /><br />
       -->
+      <div id="distance">Distance: 0.00 km </div>
+
     </form>
   </div>
-
   <div id="map" style="width: 700px; height: 500px"></div>
   <div id="step">&nbsp;</div>
-  <div id="distance">Kilometara: 0.00</div>
   <div id="stanica"></div>
 
   <script type="text/javascript">
@@ -134,7 +136,7 @@
         }
 
         marker.setPoint(p);
-        document.getElementById("distance").innerHTML = "Miles: " + (d / 1609.344).toFixed(2) + speed;
+        document.getElementById("distance").innerHTML = "Distance: " + ((d / 1609.344) * 1.667).toFixed(2) + " km";
         if (stepnum + 1 < dirn.getRoute(0).getNumSteps()) {
           if (dirn.getRoute(0).getStep(stepnum).getPolylineIndex() < poly.GetIndexAtDistance(d)) {
             stepnum++;
@@ -144,7 +146,7 @@
             var steptime = dirn.getRoute(0).getStep(stepnum - 1).getDuration().seconds;
             var stepspeed = ((stepdist / steptime) * 2.24).toFixed(0);
             step = stepspeed / 2.5;
-            speed = "<br>Trenutna brzina: " + stepspeed + " kmh";
+            speed = "Speed: " + stepspeed + " kmh";
           }
         } else {
           if (dirn.getRoute(0).getStep(stepnum).getPolylineIndex() < poly.GetIndexAtDistance(d)) {
