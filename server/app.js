@@ -33,6 +33,16 @@ app.get('/stations/', (req, res) => {
         res.json(stations);
     });
 });
+
+app.get('/proba', (req, res) => {
+    console.log("STIGO");
+    Critical.getCriticals((err, crit) => {
+        if (err)
+            throw err;
+        res.json(crit);
+    });
+});
+
 app.get('/critical/:p', (req, res) => {
     let pom = {point: req.params.p };
     Critical.addCritical(pom, (err, user) => {

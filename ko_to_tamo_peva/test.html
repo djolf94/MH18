@@ -44,13 +44,15 @@
         <div class="col-sm-3 my-1">
           <input type="submit" class="btn btn-primary" id="startbtn" value="Start" />
         </div>
-      </div>
       <!--
       <input type="text" size="80" maxlength="200" id="endpoint" placeholder="Druga adresa" /><br />
       -->
       <div id="distance">Distance: 0.00 km </div>
-
     </form>
+    </div>
+      <div class="col-sm-3 my-1">
+        <button class="btn btn-primary" onclick="suggest()">Suggest</button>
+      </div>
   </div>
   <div id="map" style="width: 700px; height: 500px"></div>
   <div id="step">&nbsp;</div>
@@ -60,8 +62,8 @@
     localStorage.setItem('ci', 0);
 
     if (GBrowserIsCompatible()) {
-
-      let path = [{
+      
+      var path = [{
           lat: 44.806940,
           lng: 20.455330
         },
@@ -102,6 +104,7 @@
       var stepnum = 0;
       var speed = "";
       var eps = 1000;
+      var begin = null;
 
       function animate(d) {
         if (d > eol) {
@@ -134,7 +137,7 @@
           map.panTo(p);
           k = 0;
         }
-
+        
         marker.setPoint(p);
         document.getElementById("distance").innerHTML = "Distance: " + ((d / 1609.344) * 1.667).toFixed(2) + " km";
         if (stepnum + 1 < dirn.getRoute(0).getNumSteps()) {
@@ -175,12 +178,60 @@
       GEvent.addListener(dirn, "error", function () {
         alert("Location(s) not recognised. Code: " + dirn.getStatus().code);
       });
+      
+      
+      function suggest(){
+      getAjax("http://localhost:3000/proba/", function(data) {
+        var response = JSON.parse(data);
+        var point = response[0].point;
+        localStorage.removeItem('pathLat');
+        localStorage.removeItem('pathLng');
+        console.log(path);
+        switch(point){
+          case "first": localStorage.setItem('pathLat', path[0].lat); localStorage.setItem('pathLng', path[0].lng);  break;
+          case "second": localStorage.setItem('pathLat', path[0].lat); localStorage.setItem('pathLng', path[0].lng); break;
+          case "third": localStorage.setItem('pathLat', path[0].lat); localStorage.setItem('pathLng', path[0].lng); break;
+          case "nothing": localStorage.setItem('pathLat', 44.806940); localStorage.setItem('pathLng', 20.455330); break;
+        }
+      });
+      
+      //Number(localStorage.getItem('pathLat'));
+      //Number(localStorage.getItem('pathLng'));
+
+      // //path = [];
+      // path.push({
+      //     lat: parseFloat(begin.lat),
+      //     lng: parseFloat(begin.lng)
+      //   });
+      // path.push({
+      //     lat: 44.806940,
+      //     lng: 20.455330
+      //   });
+      // path.push({
+      //     lat: 44.779267, 
+      //     lng: 20.468621
+      //   });
+      path = [{
+          lat: Number(localStorage.getItem('pathLat')),
+          lng: Number(localStorage.getItem('pathLng'))
+        },
+        {
+          lat: 44.791063, 
+          lng: 20.466865
+        }, 
+        {
+          lat: 44.779267, 
+          lng: 20.468621
+        }
+      ];
+        start();
+      }
 
       function start() {
         //var startpoint = document.getElementById("startpoint").value;
-        var startpoint = path[previousStop].lat + ", " + path[previousStop].lng;
+        //var startpoint = path[previousStop].lat + ", " + path[previousStop].lng;
         //var endpoint = document.getElementById("endpoint").value;
-        var endpoint = path[nextStop].lat + ", " + path[nextStop].lng
+        //var endpoint = path[nextStop].lat + ", " + path[nextStop].lng
         dirn.loadFromWaypoints(path, {
           getPolyline: true,
           getSteps: true
@@ -188,6 +239,7 @@
       }
 
     }
+
     function sleep(milliseconds) {
       var start = new Date().getTime();
       localStorage.setItem("ci", 1);
@@ -207,6 +259,17 @@
         console.log(s);
       })
       console.log(array);
+    }
+
+    function getAjax(url, success) {
+	    var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+	    xhr.open('GET', url);
+	    xhr.onreadystatechange = function() {
+	        if (xhr.readyState>3 && xhr.status==200) success(xhr.responseText);
+      };
+	    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+	    xhr.send();
+	    return xhr;
     }
 
     function postAjax(url, data, success) {
