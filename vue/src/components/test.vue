@@ -58,6 +58,7 @@ export default {
             key = prop;
           }
         }
+        console.log(output);
         this.axios.get('http://localhost:3000/critical/' + key)
                 .then((response) => { //ovde mora => f-ja da bi radio this 
                     console.log(response);                  

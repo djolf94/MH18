@@ -202,11 +202,26 @@
     }
     function getData(){
       var array = {}
-      array.s1 = localStorage.getItem("S1");
-      array.s2 = localStorage.getItem("S2");
-      array.s3 = localStorage.getItem("S3");
+      array.arr = [localStorage.getItem("S1"), localStorage.getItem("S2"), localStorage.getItem("S3")];
+      postAjax('http://localhost:3000/stations', array, function(s) {
+        console.log(s);
+      })
       console.log(array);
     }
+
+    function postAjax(url, data, success) {
+	    var xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var json = JSON.parse(xhr.responseText);
+                console.log(json.email + ", " + json.password);
+            }
+        };
+        let info = JSON.stringify(data);
+        xhr.send(info);
+	}
 
 
   </script>
