@@ -14,7 +14,7 @@ export default new Router({
       name: 'Test',
       component: test,
       meta: {
-        forVisitors: false,
+        forVisitors: true,
         forAuth: true
       }
     },

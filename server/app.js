@@ -7,7 +7,8 @@ const mongoose = require('mongoose');
 app.use(bodyParser.json());
 app.use(cors());
 
-User = require('./models/users');
+Station = require('./models/stations');
+Critical = require('./models/criticals');
 
 //connect to mongoose
 mongoose.connect('mongodb://admin:ivke12345@ds219130.mlab.com:19130/mh18');
@@ -25,7 +26,29 @@ app.get('/api/users', (req, res) => {
         res.json(users);
     });
 });
-
+app.get('/stations/', (req, res) => {
+    Station.getStations((err, stations) => {
+        if (err)
+            throw err;
+        res.json(stations);
+    });
+});
+app.get('/critical/:p', (req, res) => {
+    let pom = {point: req.params.p };
+    Critical.addCritical(pom, (err, user) => {
+        if (err)
+            throw err;
+        res.json(user);
+    });
+});
+app.post('/stations/', (req, res) => {
+    let station = req.body;
+    Station.addStation(station, (err, station) => {
+        if (err)
+            throw err;
+        res.json(station);
+    });
+});
 app.post('/api/users', (req, res) => {
     var user = req.body;
     User.addUser(user,(err, user) => {

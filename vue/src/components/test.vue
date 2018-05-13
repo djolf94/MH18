@@ -22,14 +22,16 @@ export default {
       yCoordinate: "",
       leftIndicator: true,
       rightIndicator: true,
-      countIndicator: false
+      countIndicator: false,
+      values: []
     };
   },
   created: function() {
+    this.initValues();
     localStorage.setItem("x", 0);
     this.leapStart();
     localStorage.setItem('ci', 0);
-    this.machineLearning(); 
+    //this.machineLearning();
   },
   updated: function() {},
   methods: {
@@ -47,14 +49,57 @@ export default {
           {input: { s1: 0.2, s2: 0.8, s3: 0.1 }, output: { second: 1 }},
           {input: { s1: 0.8, s2: 0.2, s3: 0.15 }, output: { first: 1 }}]);
 
-        var output = net.run({ s1: 0.2, s2: 0.3, s3: 0.4 });  // { white: 0.99, black: 0.002 }
-        console.log(output);
-      
+        var output = net.run({ s1: Number(this.values[0]), s2: Number(this.values[1]), s3: Number(this.values[2]) });  // { white: 0.99, black: 0.002 }
+        let max = 0;
+        let key = '';
+        for (let prop in output) {
+          if (Number(output[prop]) > max) {
+            max = Number(output[prop]);
+            key = prop;
+          }
+        }
+        this.axios.get('http://localhost:3000/critical/' + key)
+                .then((response) => { //ovde mora => f-ja da bi radio this 
+                    console.log(response);                  
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
     },
     countIndicatorInit: function () {
       localStorage.setItem('ci', 1);
       console.log("Open doors");
-    },  
+    },
+    initValues: function() {
+      this.axios.get('http://localhost:3000/stations/')
+                .then((response) => { //ovde mora => f-ja da bi radio this
+                    this.initValues2(response.data['0'].arr);              
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+    },
+    initValues2: function(a) {
+      this.values = a;
+      this.normalize();
+    },
+    normalize: function() {
+      var sum = 0;
+      for (var i in this.values)
+        sum = sum + Number(this.values[i]);
+      for (var j in this.values) {
+        if (Number(this.values[j]) <= 0)
+          this.values[j] = 0;
+        else if (Number(this.values[j])/(sum*1.0) >= 1)
+          this.values[j] = 1;
+        else
+          this.values[j] = Number(this.values[j])/(sum*1.0);
+      }
+
+      console.log(this.values);
+      this.machineLearning();
+  
+    },
     leapStart: function() {
       var options = { enableGestures: true };
 
