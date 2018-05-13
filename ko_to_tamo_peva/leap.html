@@ -10,7 +10,7 @@
       position: relative;
       background: none;
       margin-left: 0;
-      margin-right: 60%
+      margin-right: 30%
     }
 
     #animate {
@@ -110,9 +110,10 @@
 
         if (Number(localStorage.getItem('ci')) == 1) {
           document.getElementById("doors").innerHTML = "Doors open"
-          if(doorIndicator){
+          
+          if(!doorIndicator){
             openDoor();
-            doorIndicator = false;
+            doorIndicator = true;
           }
 
           if (xCoordinate == 1 && leftIndicator == true) {
@@ -137,9 +138,9 @@
           }
         } else {
           document.getElementById("doors").innerHTML = "Doors closed"
-          if(!doorIndicator){
+          if(doorIndicator){
             closeDoor();
-            doorIndicator = true;
+            doorIndicator = false;
           }
 
         }
